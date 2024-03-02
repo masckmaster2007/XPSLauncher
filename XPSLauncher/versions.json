@@ -1,0 +1,20 @@
+{
+  "Versions": [
+    {
+      "name": "GD 2.2",
+      "path": "gdps/2.2/XPS.exe"
+    },
+    {
+      "name": "GD 2.1",
+      "path": "gdps/2.1/XPS.exe"
+    },
+    {
+      "name": "GD 2.0",
+      "path": "gdps/2.0/XPS.exe"
+    },
+    {
+      "name": "GD 1.9",
+      "path": "gdps/1.9/XPS.exe"
+    }
+  ]
+}
