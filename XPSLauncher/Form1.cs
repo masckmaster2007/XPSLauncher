@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Text;
 using System.IO;
 using System.Net.Http;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -10,16 +13,34 @@ namespace XPSLauncher
     public partial class Form1 : Form
     {
         private static readonly HttpClient client = new HttpClient();
-        private static readonly string currentVersion = "2.0.0";
+        private static readonly string currentVersion = "2.0.1";
+        private PrivateFontCollection privateFonts = new PrivateFontCollection();
 
         public Form1()
         {
+            if (!IsRunningAsAdministrator())
+            {
+                MessageBox.Show($"XPS requires administrator due to how the installer works. Please re-run XPS with administrator to continue", $"Administrator Required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(0);
+            }
+
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.pictureBox1.SendToBack();
             checkVersion();
+            LoadFontFromFile();
+        }
 
+        private void LoadFontFromFile()
+        {
+            string fontPath = "Pusab.ttf";
+            privateFonts.AddFontFile(fontPath);
+            button1.Font = new Font(privateFonts.Families[0], 17.5F);
+            button2.Font = new Font(privateFonts.Families[0], 17.5F);
+            button3.Font = new Font(privateFonts.Families[0], 17.5F);
+            button4.Font = new Font(privateFonts.Families[0], 17.5F);
+            label1.Font = new Font(privateFonts.Families[0], 15.75F);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -196,6 +217,15 @@ namespace XPSLauncher
             catch (Exception ex)
             {
                 MessageBox.Show($"Error launching that GDPS version. Create a support ticket in the Discord and we will try to help you.\n\nError message: {ex.Message}", $"Error laucnhing GDPS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private static bool IsRunningAsAdministrator()
+        {
+            using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+            {
+                WindowsPrincipal principal = new WindowsPrincipal(identity);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
             }
         }
     }
