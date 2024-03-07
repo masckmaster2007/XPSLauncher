@@ -101,6 +101,12 @@ namespace XPSLauncher
             string executionPath = GetExecutionPath();
             string path = "";
 
+            if (Control.ModifierKeys == Keys.Shift)
+            {
+                ResetGDPS(version);
+                return;
+            }
+
             if (downloadingVersions[version])
             {
                 MessageBox.Show($"Version {version} is currently being downloaded. Please wait until the download is complete.", $"Downloading {version}", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -129,13 +135,34 @@ namespace XPSLauncher
                     return;
             }
 
-            if (File.Exists(path))
+            if (File.Exists(path) && !downloadingVersions[version] && !errorVersions[version])
             {
                 StartProcess(path);
             }
             else
             {
                 MessageBox.Show($"Error loading version {version}. Create a support ticket in the Discord and we will try to help you.", $"Error loading {version}", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ResetGDPS(string version)
+        {
+            if (downloadingVersions[version])
+            {
+                return;
+            }
+
+            DialogResult dialogResult = MessageBox.Show($"Are you sure you would like to reset {version}? This will delete all game files and replace them with fresh ones. This will not effect save files.", $"Reset keybind pressed", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.Yes)
+            {
+                downloadingVersions[version] = true;
+                string executionPath = GetExecutionPath();
+                string path = Path.Combine(executionPath, "gdps", version);
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
+                DownloadAndExtractFiles(version);
             }
         }
 
@@ -241,7 +268,10 @@ namespace XPSLauncher
                     {
                         errorVersions[version] = true;
                         downloadingVersions[version] = false;
-                        Directory.Delete(extractPath, true);
+                        if (Directory.Exists(extractPath))
+                        {
+                            Directory.Delete(extractPath);
+                        }
                         MessageBox.Show($"Error downloading files for version {version}. Create a support ticket in the Discord and we will try to help you.", $"Error downloading {version}", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
@@ -251,7 +281,10 @@ namespace XPSLauncher
             {
                 errorVersions[version] = true;
                 downloadingVersions[version] = false;
-                Directory.Delete(extractPath, true);
+                if (Directory.Exists(extractPath))
+                {
+                    Directory.Delete(extractPath);
+                }
                 MessageBox.Show($"Error downloading files for version {version}. Create a support ticket in the Discord and we will try to help you.\n\nError message: {ex.Message}", $"Error downloading {version}", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -338,27 +371,43 @@ namespace XPSLauncher
         {
             switch (e.KeyChar)
             {
+                //will fix this later
                 case '1':
                     button1.Focus();
                     button1.PerformClick();
+                    break;
+                case '!':
+                    button1.Focus();
+                    ResetGDPS("2.2");
                     break;
                 case '2':
                     button2.Focus();
                     button2.PerformClick();
                     break;
+                case '@':
+                    button2.Focus();
+                    ResetGDPS("2.1");
+                    break;
                 case '3':
                     button3.Focus();
                     button3.PerformClick();
+                    break;
+                case '#':
+                    button3.Focus();
+                    ResetGDPS("2.0");
                     break;
                 case '4':
                     button4.Focus();
                     button4.PerformClick();
                     break;
+                case '$':
+                    button4.Focus();
+                    ResetGDPS("1.9");
+                    break;
                 default:
                     break;
             }
         }
-
     }
 }
 
