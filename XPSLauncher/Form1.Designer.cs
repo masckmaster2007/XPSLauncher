@@ -47,6 +47,18 @@ namespace XPSLauncher
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label5 = new System.Windows.Forms.Label();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
@@ -87,7 +99,7 @@ namespace XPSLauncher
             this.button3.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button3.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.button3.Location = new System.Drawing.Point(240, 375);
+            this.button3.Location = new System.Drawing.Point(240, 374);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(120, 40);
             this.button3.TabIndex = 2;
@@ -100,7 +112,7 @@ namespace XPSLauncher
             this.button4.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button4.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.button4.Location = new System.Drawing.Point(240, 475);
+            this.button4.Location = new System.Drawing.Point(240, 473);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(120, 40);
             this.button4.TabIndex = 3;
@@ -120,7 +132,6 @@ namespace XPSLauncher
             // 
             // pictureBox8
             // 
-            this.pictureBox8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.pictureBox8.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox8.Image = global::XPS.Properties.Resources.Settings;
             this.pictureBox8.Location = new System.Drawing.Point(500, 0);
@@ -133,7 +144,6 @@ namespace XPSLauncher
             // 
             // pictureBox7
             // 
-            this.pictureBox7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.pictureBox7.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox7.Image = global::XPS.Properties.Resources.Tools;
             this.pictureBox7.Location = new System.Drawing.Point(4, 520);
@@ -146,7 +156,6 @@ namespace XPSLauncher
             // 
             // pictureBox6
             // 
-            this.pictureBox6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.pictureBox6.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox6.Image = global::XPS.Properties.Resources.Website;
             this.pictureBox6.Location = new System.Drawing.Point(4, 575);
@@ -159,7 +168,6 @@ namespace XPSLauncher
             // 
             // pictureBox5
             // 
-            this.pictureBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.pictureBox5.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox5.Image = global::XPS.Properties.Resources.Twitch;
             this.pictureBox5.Location = new System.Drawing.Point(517, 571);
@@ -172,7 +180,6 @@ namespace XPSLauncher
             // 
             // pictureBox4
             // 
-            this.pictureBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.pictureBox4.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox4.Image = global::XPS.Properties.Resources.YouTube;
             this.pictureBox4.Location = new System.Drawing.Point(447, 571);
@@ -185,7 +192,6 @@ namespace XPSLauncher
             // 
             // pictureBox3
             // 
-            this.pictureBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.pictureBox3.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox3.Image = global::XPS.Properties.Resources.Twitter;
             this.pictureBox3.Location = new System.Drawing.Point(376, 571);
@@ -198,7 +204,6 @@ namespace XPSLauncher
             // 
             // pictureBox2
             // 
-            this.pictureBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox2.Image = global::XPS.Properties.Resources.Discord;
             this.pictureBox2.Location = new System.Drawing.Point(306, 571);
@@ -211,7 +216,6 @@ namespace XPSLauncher
             // 
             // pictureBox1
             // 
-            this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Default;
             this.pictureBox1.Image = global::XPS.Properties.Resources.logoPng;
             this.pictureBox1.Location = new System.Drawing.Point(190, -60);
@@ -238,7 +242,7 @@ namespace XPSLauncher
             // 
             this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button5.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.button5.Location = new System.Drawing.Point(190, 475);
+            this.button5.Location = new System.Drawing.Point(190, 452);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(222, 40);
             this.button5.TabIndex = 14;
@@ -251,7 +255,7 @@ namespace XPSLauncher
             // 
             this.button6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button6.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.button6.Location = new System.Drawing.Point(190, 525);
+            this.button6.Location = new System.Drawing.Point(190, 498);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(222, 40);
             this.button6.TabIndex = 15;
@@ -260,12 +264,162 @@ namespace XPSLauncher
             this.button6.Visible = false;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.checkBox2.Location = new System.Drawing.Point(145, 199);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(137, 17);
+            this.checkBox2.TabIndex = 16;
+            this.checkBox2.Text = "Allow multiple instances";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.Visible = false;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label2.Location = new System.Drawing.Point(243, 278);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(45, 13);
+            this.label2.TabIndex = 17;
+            this.label2.Text = "Themes";
+            this.label2.Visible = false;
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Location = new System.Drawing.Point(150, 328);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(64, 64);
+            this.panel1.TabIndex = 18;
+            this.panel1.Visible = false;
+            this.panel1.Click += new System.EventHandler(this.panel1_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label3.Location = new System.Drawing.Point(156, 400);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(30, 13);
+            this.label3.TabIndex = 19;
+            this.label3.Text = "Dark";
+            this.label3.Visible = false;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label4.Location = new System.Drawing.Point(224, 400);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(42, 13);
+            this.label4.TabIndex = 21;
+            this.label4.Text = "Amoled";
+            this.label4.Visible = false;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Location = new System.Drawing.Point(229, 328);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(64, 64);
+            this.panel2.TabIndex = 20;
+            this.panel2.Visible = false;
+            this.panel2.Click += new System.EventHandler(this.panel2_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label5.Location = new System.Drawing.Point(304, 400);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(37, 13);
+            this.label5.TabIndex = 23;
+            this.label5.Text = "Purple";
+            this.label5.Visible = false;
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(0)))), ((int)(((byte)(50)))));
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Location = new System.Drawing.Point(309, 328);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(64, 64);
+            this.panel3.TabIndex = 22;
+            this.panel3.Visible = false;
+            this.panel3.Click += new System.EventHandler(this.panel3_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label6.Location = new System.Drawing.Point(394, 400);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(28, 13);
+            this.label6.TabIndex = 25;
+            this.label6.Text = "Blue";
+            this.label6.Visible = false;
+            // 
+            // panel4
+            // 
+            this.panel4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(50)))));
+            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Location = new System.Drawing.Point(388, 328);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(64, 64);
+            this.panel4.TabIndex = 24;
+            this.panel4.Visible = false;
+            this.panel4.Click += new System.EventHandler(this.panel4_Click);
+            // 
+            // button7
+            // 
+            this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button7.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.button7.Location = new System.Drawing.Point(190, 544);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(222, 40);
+            this.button7.TabIndex = 26;
+            this.button7.Text = "Restart Launcher";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Visible = false;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // button8
+            // 
+            this.button8.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button8.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.button8.Location = new System.Drawing.Point(190, 590);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(222, 40);
+            this.button8.TabIndex = 27;
+            this.button8.Text = "Reset Launcher Settings";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Visible = false;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.ClientSize = new System.Drawing.Size(584, 636);
+            this.Controls.Add(this.button8);
+            this.Controls.Add(this.button7);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.panel4);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.checkBox1);
@@ -316,6 +470,18 @@ namespace XPSLauncher
         private CheckBox checkBox1;
         private Button button5;
         private Button button6;
+        private CheckBox checkBox2;
+        private Label label2;
+        private Panel panel1;
+        private Label label3;
+        private Label label4;
+        private Panel panel2;
+        private Label label5;
+        private Panel panel3;
+        private Label label6;
+        private Panel panel4;
+        private Button button7;
+        private Button button8;
     }
 }
 

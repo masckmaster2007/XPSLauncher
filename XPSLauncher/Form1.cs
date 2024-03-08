@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Compression;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace XPSLauncher
 {
     public partial class Form1 : Form
     {
         private static readonly HttpClient client = new HttpClient();
-        private static readonly string currentVersion = "2.2.0";
+        private static readonly string currentVersion = "2.3.0";
         private PrivateFontCollection privateFonts = new PrivateFontCollection();
         private Dictionary<string, bool> downloadingVersions = new Dictionary<string, bool>()
         {
@@ -45,11 +46,10 @@ namespace XPSLauncher
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.pictureBox1.SendToBack();
+            ConvertOnLoad();
             LoadFontFromFile();
             CheckVersion();
             CheckDownloaded();
-            dynamic config = ReadConfig();
-            checkBox1.Checked = config.closeOnExit;
         }
 
         private void LoadFontFromFile()
@@ -60,10 +60,19 @@ namespace XPSLauncher
             button2.Font = new Font(privateFonts.Families[0], 17.5F);
             button3.Font = new Font(privateFonts.Families[0], 17.5F);
             button4.Font = new Font(privateFonts.Families[0], 17.5F);
-            button5.Font = new Font(privateFonts.Families[0], 13.5F);
-            button6.Font = new Font(privateFonts.Families[0], 13.5F);
+            button5.Font = new Font(privateFonts.Families[0], 14.5F);
+            button6.Font = new Font(privateFonts.Families[0], 12.5F);
+            button7.Font = new Font(privateFonts.Families[0], 13.5F);
+            button8.Font = new Font(privateFonts.Families[0], 10.5F);
             label1.Font = new Font(privateFonts.Families[0], 15.75F);
             checkBox1.Font = new Font(privateFonts.Families[0], 15.75F);
+            checkBox2.Font = new Font(privateFonts.Families[0], 15.75F);
+            label2.Font = new Font(privateFonts.Families[0], 20.0F);
+            label3.Font = new Font(privateFonts.Families[0], 13.5F);
+            label4.Font = new Font(privateFonts.Families[0], 13.5F);
+            label5.Font = new Font(privateFonts.Families[0], 13.5F);
+            label6.Font = new Font(privateFonts.Families[0], 13.5F);
+            button7.Font = new Font(privateFonts.Families[0], 13.5F);
         }
 
         private void load22(object sender, EventArgs e)
@@ -148,11 +157,19 @@ namespace XPSLauncher
 
             if (File.Exists(path) && !downloadingVersions[version] && !errorVersions[version])
             {
-                StartProcess(path);
                 dynamic config = ReadConfig();
-                if ((bool)config.closeOnExit)
+                if ((bool)config.allowMultipleInstances || !IsProcessOpen(path))
                 {
-                    Environment.Exit(0);
+                    StartProcess(path);
+                    if ((bool)config.closeOnLoad)
+                    {
+                        Environment.Exit(0);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(Text = $"XPS {version} is already running. If you would like to open another instance, enable the \"Allow multiple instances\" setting in the settings menu.", $"Error loading version {version}", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
             }
             else
@@ -448,8 +465,20 @@ namespace XPSLauncher
 
                 //disable stuff
                 this.checkBox1.Visible = false;
+                this.checkBox2.Visible = false;
                 this.button5.Visible = false;
                 this.button6.Visible = false;
+                this.button7.Visible = false;
+                this.button8.Visible = false;
+                this.label2.Visible = false;
+                this.panel1.Visible = false;
+                this.label3.Visible = false;
+                this.panel2.Visible = false;
+                this.label4.Visible = false;
+                this.panel3.Visible = false;
+                this.label5.Visible = false;
+                this.panel4.Visible = false;
+                this.label6.Visible = false;
                 this.button1.Focus();
                 settingsOpen = false;
             }
@@ -470,8 +499,20 @@ namespace XPSLauncher
 
                 //enable stuff
                 this.checkBox1.Visible = true;
+                this.checkBox2.Visible = true;
                 this.button5.Visible = true;
                 this.button6.Visible = true;
+                this.button7.Visible = true;
+                this.button8.Visible = true;
+                this.label2.Visible = true;
+                this.panel1.Visible = true;
+                this.label3.Visible = true;
+                this.panel2.Visible = true;
+                this.label4.Visible = true;
+                this.panel3.Visible = true;
+                this.label5.Visible = true;
+                this.panel4.Visible = true;
+                this.label6.Visible = true;
                 this.button5.Focus();
                 settingsOpen = true;
             }
@@ -479,7 +520,12 @@ namespace XPSLauncher
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            WriteConfig("closeOnExit", checkBox1.Checked);
+            WriteConfig("closeOnLoad", checkBox1.Checked);
+        }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            WriteConfig("allowMultipleInstances", checkBox2.Checked);
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -513,6 +559,17 @@ namespace XPSLauncher
             }
         }
 
+        private void button7_Click(object sender, EventArgs e)
+        {
+            Application.Restart();
+            Environment.Exit(0);
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            ResetConfig();
+        }
+
         private void ResetConfig()
         {
             string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
@@ -523,10 +580,14 @@ namespace XPSLauncher
                 File.Delete(configPath);
             }
             checkBox1.Checked = false;
+            checkBox2.Checked = false;
+            SetThemeColor(System.Drawing.Color.FromArgb(50, 50, 50));
             dynamic json = new
             {
                 lastVersion = currentVersion,
-                closeOnExit = false
+                closeOnLoad = false,
+                allowMultipleInstances = false,
+                theme = 0
             };
             string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(json, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(configPath, jsonText);
@@ -536,6 +597,17 @@ namespace XPSLauncher
         {
             dynamic json = ReadConfig();
             json[key] = value;
+            string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(json, Newtonsoft.Json.Formatting.Indented);
+            string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string xpsPath = Path.Combine(localAppDataPath, "XPS");
+            string configPath = Path.Combine(xpsPath, "launcher.json");
+            File.WriteAllText(configPath, jsonText);
+        }
+
+        private void RemoveConfigValue(string key)
+        {
+            dynamic json = ReadConfig();
+            json.Remove(key);
             string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(json, Newtonsoft.Json.Formatting.Indented);
             string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             string xpsPath = Path.Combine(localAppDataPath, "XPS");
@@ -555,6 +627,97 @@ namespace XPSLauncher
             string jsonText = File.ReadAllText(configPath);
             dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonText);
             return json;
+        }
+
+        public static bool IsProcessOpen(string filePath)
+        {
+            var processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(filePath));
+            return processes.Any(p => p.MainModule.FileName.Equals(filePath, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private void ConvertOnLoad()
+        {
+            dynamic config = ReadConfig();
+
+            if (config.lastVersion == "2.2.0")
+            {
+                RemoveConfigValue("closeOnExit");
+                WriteConfig("closeOnLoad", config.closeOnExit);
+                WriteConfig("allowMultipleInstances", false);
+                WriteConfig("theme", 0);
+                config.allowMultipleInstances = false;
+                config.closeOnLoad = config.closeOnExit;
+            }
+
+            checkBox1.Checked = config.closeOnLoad;
+            checkBox2.Checked = config.allowMultipleInstances;
+            LoadTheme();
+            WriteConfig("lastVersion", currentVersion);
+        }
+
+        private void LoadTheme()
+        {
+            dynamic config = ReadConfig();
+            int theme = config.theme;
+            try
+            {
+                switch (theme)
+                {
+                    case 1:
+                        SetThemeColor(System.Drawing.Color.FromArgb(0, 0, 0));
+                        break;
+                    case 2:
+                        SetThemeColor(System.Drawing.Color.FromArgb(25, 0, 50));
+                        break;
+                    case 3:
+                        SetThemeColor(System.Drawing.Color.FromArgb(0, 0, 50));
+                        break;
+                    default:
+                        SetThemeColor(System.Drawing.Color.FromArgb(50, 50, 50));
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading theme. Error message: {ex.Message}", $"Error loading theme", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        private void SetThemeColor(Color color)
+        {
+            this.BackColor = color;
+            this.pictureBox8.BackColor = color;
+            this.pictureBox7.BackColor = color;
+            this.pictureBox6.BackColor = color;
+            this.pictureBox5.BackColor = color;
+            this.pictureBox4.BackColor = color;
+            this.pictureBox3.BackColor = color;
+            this.pictureBox2.BackColor = color;
+            this.pictureBox1.BackColor = color;
+        }
+
+        private void panel1_Click(object sender, EventArgs e)
+        {
+            WriteConfig("theme", 0);
+            LoadTheme();
+        }
+
+        private void panel2_Click(object sender, EventArgs e)
+        {
+            WriteConfig("theme", 1);
+            LoadTheme();
+        }
+
+        private void panel3_Click(object sender, EventArgs e)
+        {
+            WriteConfig("theme", 2);
+            LoadTheme();
+        }
+
+        private void panel4_Click(object sender, EventArgs e)
+        {
+            WriteConfig("theme", 3);
+            LoadTheme();
         }
     }
 }
