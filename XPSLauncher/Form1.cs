@@ -15,7 +15,7 @@ namespace XPSLauncher
     public partial class Form1 : Form
     {
         private static readonly HttpClient client = new HttpClient();
-        private static readonly string currentVersion = "2.1.2";
+        private static readonly string currentVersion = "2.2.0";
         private PrivateFontCollection privateFonts = new PrivateFontCollection();
         private Dictionary<string, bool> downloadingVersions = new Dictionary<string, bool>()
         {
@@ -31,6 +31,7 @@ namespace XPSLauncher
             { "2.0", false },
             { "1.9", false }
         };
+        private static bool settingsOpen = false;
 
         public Form1()
         {
@@ -47,6 +48,8 @@ namespace XPSLauncher
             LoadFontFromFile();
             CheckVersion();
             CheckDownloaded();
+            dynamic config = ReadConfig();
+            checkBox1.Checked = config.closeOnExit;
         }
 
         private void LoadFontFromFile()
@@ -57,7 +60,10 @@ namespace XPSLauncher
             button2.Font = new Font(privateFonts.Families[0], 17.5F);
             button3.Font = new Font(privateFonts.Families[0], 17.5F);
             button4.Font = new Font(privateFonts.Families[0], 17.5F);
+            button5.Font = new Font(privateFonts.Families[0], 13.5F);
+            button6.Font = new Font(privateFonts.Families[0], 13.5F);
             label1.Font = new Font(privateFonts.Families[0], 15.75F);
+            checkBox1.Font = new Font(privateFonts.Families[0], 15.75F);
         }
 
         private void load22(object sender, EventArgs e)
@@ -98,6 +104,11 @@ namespace XPSLauncher
 
         private void launchGDPS(string version)
         {
+            if (!this.button1.Visible || !this.button2.Visible || !this.button3.Visible || !this.button4.Visible)
+            {
+                return;
+            }
+
             string executionPath = GetExecutionPath();
             string path = "";
 
@@ -138,6 +149,11 @@ namespace XPSLauncher
             if (File.Exists(path) && !downloadingVersions[version] && !errorVersions[version])
             {
                 StartProcess(path);
+                dynamic config = ReadConfig();
+                if ((bool)config.closeOnExit)
+                {
+                    Environment.Exit(0);
+                }
             }
             else
             {
@@ -194,6 +210,11 @@ namespace XPSLauncher
         private void ToolsButton(object sender, EventArgs e)
         {
             OpenUrl("https://xps.xytriza.com/tools");
+        }
+
+        private void SettingsButton(object sender, EventArgs e)
+        {
+            ToggleSettings();
         }
 
         private async void CheckVersion()
@@ -261,6 +282,11 @@ namespace XPSLauncher
                         {
                             await response.Content.CopyToAsync(fileStream);
                         }
+                        ZipFile.ExtractToDirectory(zipPath, extractPath);
+                        if (File.Exists(zipPath))
+                        {
+                            File.Delete(zipPath);
+                        }
                         downloadingVersions[version] = false;
                         MessageBox.Show($"Version {version} has been downloaded successfully!", $"Downloaded {version}", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -271,6 +297,10 @@ namespace XPSLauncher
                         if (Directory.Exists(extractPath))
                         {
                             Directory.Delete(extractPath);
+                        }
+                        if (File.Exists(zipPath))
+                        {
+                            File.Delete(zipPath);
                         }
                         MessageBox.Show($"Error downloading files for version {version}. Create a support ticket in the Discord and we will try to help you.", $"Error downloading {version}", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
@@ -285,21 +315,11 @@ namespace XPSLauncher
                 {
                     Directory.Delete(extractPath);
                 }
+                if (File.Exists(zipPath))
+                {
+                    File.Delete(zipPath);
+                }
                 MessageBox.Show($"Error downloading files for version {version}. Create a support ticket in the Discord and we will try to help you.\n\nError message: {ex.Message}", $"Error downloading {version}", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            try
-            {
-                ZipFile.ExtractToDirectory(zipPath, extractPath);
-                File.Delete(zipPath);
-            }
-            catch (Exception ex)
-            {
-                errorVersions[version] = true;
-                downloadingVersions[version] = false;
-                Directory.Delete(extractPath, true);
-                MessageBox.Show($"Error extracting files for version {version}. Create a support ticket in the Discord and we will try to help you.\n\nError message: {ex.Message}", $"Error extracting {version}", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
         }
@@ -407,6 +427,134 @@ namespace XPSLauncher
                 default:
                     break;
             }
+        }
+
+        private void ToggleSettings()
+        {
+            if (settingsOpen)
+            {
+                //enable stuff
+                this.button1.Visible = true;
+                this.button2.Visible = true;
+                this.button3.Visible = true;
+                this.button4.Visible = true;
+                this.label1.Visible = true;
+                this.pictureBox7.Visible = true;
+                this.pictureBox6.Visible = true;
+                this.pictureBox5.Visible = true;
+                this.pictureBox4.Visible = true;
+                this.pictureBox3.Visible = true;
+                this.pictureBox2.Visible = true;
+
+                //disable stuff
+                this.checkBox1.Visible = false;
+                this.button5.Visible = false;
+                this.button6.Visible = false;
+                this.button1.Focus();
+                settingsOpen = false;
+            }
+            else
+            {
+                //disable stuff
+                this.button1.Visible = false;
+                this.button2.Visible = false;
+                this.button3.Visible = false;
+                this.button4.Visible = false;
+                this.label1.Visible = false;
+                this.pictureBox7.Visible = false;
+                this.pictureBox6.Visible = false;
+                this.pictureBox5.Visible = false;
+                this.pictureBox4.Visible = false;
+                this.pictureBox3.Visible = false;
+                this.pictureBox2.Visible = false;
+
+                //enable stuff
+                this.checkBox1.Visible = true;
+                this.button5.Visible = true;
+                this.button6.Visible = true;
+                this.button5.Focus();
+                settingsOpen = true;
+            }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            WriteConfig("closeOnExit", checkBox1.Checked);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            string executionPath = GetExecutionPath();
+            try
+            {
+                Process.Start("explorer.exe", executionPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening the XPS folder. Create a support ticket in the Discord and we will try to help you.\n\nError message: {ex.Message}", $"Error opening XPS folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string xpsPath = Path.Combine(localAppDataPath, "XPS");
+            if (!Directory.Exists(xpsPath))
+            {
+                Directory.CreateDirectory(xpsPath);
+            }
+            try
+            {
+                Process.Start("explorer.exe", xpsPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening the XPS folder. Create a support ticket in the Discord and we will try to help you.\n\nError message: {ex.Message}", $"Error opening XPS folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ResetConfig()
+        {
+            string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string xpsPath = Path.Combine(localAppDataPath, "XPS");
+            string configPath = Path.Combine(xpsPath, "launcher.json");
+            if (File.Exists(configPath))
+            {
+                File.Delete(configPath);
+            }
+            checkBox1.Checked = false;
+            dynamic json = new
+            {
+                lastVersion = currentVersion,
+                closeOnExit = false
+            };
+            string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(json, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(configPath, jsonText);
+        }
+
+        private void WriteConfig<T>(string key, T value)
+        {
+            dynamic json = ReadConfig();
+            json[key] = value;
+            string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(json, Newtonsoft.Json.Formatting.Indented);
+            string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string xpsPath = Path.Combine(localAppDataPath, "XPS");
+            string configPath = Path.Combine(xpsPath, "launcher.json");
+            File.WriteAllText(configPath, jsonText);
+        }
+
+        private dynamic ReadConfig()
+        {
+            string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string xpsPath = Path.Combine(localAppDataPath, "XPS");
+            string configPath = Path.Combine(xpsPath, "launcher.json");
+            if (!File.Exists(configPath))
+            {
+                ResetConfig();
+            }
+            string jsonText = File.ReadAllText(configPath);
+            dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonText);
+            return json;
         }
     }
 }
