@@ -16,7 +16,7 @@ namespace XPSLauncher
     public partial class Form1 : Form
     {
         private static readonly HttpClient client = new HttpClient();
-        private static readonly string currentVersion = "2.3.1";
+        private static readonly string currentVersion = "2.3.2";
         private PrivateFontCollection privateFonts = new PrivateFontCollection();
         private Dictionary<string, bool> downloadingVersions = new Dictionary<string, bool>()
         {
@@ -36,8 +36,8 @@ namespace XPSLauncher
 
         public Form1()
         {
-            //try
-            //{
+            try
+            {
                 if (!IsRunningAsAdministrator())
                 {
                     MessageBox.Show($"XPS requires administrator due to how the installer works. Please re-run XPS with administrator to continue", $"Administrator Required", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -52,11 +52,11 @@ namespace XPSLauncher
                 LoadFontFromFile();
                 CheckVersion();
                 CheckDownloaded();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show($"Error loading XPS. Error message: {ex.Message}", $"Error loading XPS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading XPS. Error message: {ex.Message}", $"Error loading XPS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void LoadFontFromFile()
