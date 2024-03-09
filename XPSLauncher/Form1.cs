@@ -16,7 +16,7 @@ namespace XPSLauncher
     public partial class Form1 : Form
     {
         private static readonly HttpClient client = new HttpClient();
-        private static readonly string currentVersion = "2.3.0";
+        private static readonly string currentVersion = "2.3.1";
         private PrivateFontCollection privateFonts = new PrivateFontCollection();
         private Dictionary<string, bool> downloadingVersions = new Dictionary<string, bool>()
         {
@@ -36,20 +36,27 @@ namespace XPSLauncher
 
         public Form1()
         {
-            if (!IsRunningAsAdministrator())
-            {
-                MessageBox.Show($"XPS requires administrator due to how the installer works. Please re-run XPS with administrator to continue", $"Administrator Required", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(0);
-            }
+            //try
+            //{
+                if (!IsRunningAsAdministrator())
+                {
+                    MessageBox.Show($"XPS requires administrator due to how the installer works. Please re-run XPS with administrator to continue", $"Administrator Required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Environment.Exit(0);
+                }
 
-            InitializeComponent();
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.pictureBox1.SendToBack();
-            ConvertOnLoad();
-            LoadFontFromFile();
-            CheckVersion();
-            CheckDownloaded();
+                InitializeComponent();
+                this.FormBorderStyle = FormBorderStyle.FixedSingle;
+                this.MaximizeBox = false;
+                this.pictureBox1.SendToBack();
+                ConvertOnLoad();
+                LoadFontFromFile();
+                CheckVersion();
+                CheckDownloaded();
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show($"Error loading XPS. Error message: {ex.Message}", $"Error loading XPS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
         }
 
         private void LoadFontFromFile()
@@ -572,16 +579,20 @@ namespace XPSLauncher
 
         private void ResetConfig()
         {
-            string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string xpsPath = Path.Combine(localAppDataPath, "XPS");
-            string configPath = Path.Combine(xpsPath, "launcher.json");
+            string userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string xpsPath = Path.Combine(userPath, "Xytriza", "XPS");
+            string configPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "xytriza", "xpslauncher.json");
+            if (!Directory.Exists(xpsPath))
+            {
+                Directory.CreateDirectory(xpsPath);
+            }
             if (File.Exists(configPath))
             {
                 File.Delete(configPath);
             }
             checkBox1.Checked = false;
             checkBox2.Checked = false;
-            SetThemeColor(System.Drawing.Color.FromArgb(50, 50, 50));
+            SetThemeColor(Color.FromArgb(50, 50, 50));
             dynamic json = new
             {
                 lastVersion = currentVersion,
@@ -598,9 +609,7 @@ namespace XPSLauncher
             dynamic json = ReadConfig();
             json[key] = value;
             string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(json, Newtonsoft.Json.Formatting.Indented);
-            string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string xpsPath = Path.Combine(localAppDataPath, "XPS");
-            string configPath = Path.Combine(xpsPath, "launcher.json");
+            string configPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "xytriza", "xpslauncher.json");
             File.WriteAllText(configPath, jsonText);
         }
 
@@ -609,24 +618,28 @@ namespace XPSLauncher
             dynamic json = ReadConfig();
             json.Remove(key);
             string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(json, Newtonsoft.Json.Formatting.Indented);
-            string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string xpsPath = Path.Combine(localAppDataPath, "XPS");
-            string configPath = Path.Combine(xpsPath, "launcher.json");
+            string configPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "xytriza", "xpslauncher.json");
             File.WriteAllText(configPath, jsonText);
         }
 
         private dynamic ReadConfig()
         {
-            string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string xpsPath = Path.Combine(localAppDataPath, "XPS");
-            string configPath = Path.Combine(xpsPath, "launcher.json");
+            string configPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "xytriza", "xpslauncher.json");
+            string oldConfigFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "XPS");
+            string oldConfigPath = Path.Combine(oldConfigFolder, "launcher.json");
             if (!File.Exists(configPath))
             {
                 ResetConfig();
             }
+            if (Directory.Exists(oldConfigFolder) && File.Exists(oldConfigPath))
+            {
+                string oldConfigText = File.ReadAllText(oldConfigPath);
+                File.WriteAllText(configPath, oldConfigText);
+                File.Delete(oldConfigPath);
+            }
             string jsonText = File.ReadAllText(configPath);
             dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonText);
-            return json;
+            return json ?? new { };
         }
 
         public static bool IsProcessOpen(string filePath)
@@ -642,15 +655,15 @@ namespace XPSLauncher
             if (config.lastVersion == "2.2.0")
             {
                 RemoveConfigValue("closeOnExit");
-                WriteConfig("closeOnLoad", config.closeOnExit);
+                WriteConfig("closeOnLoad", config.closeOnExit ?? false);
                 WriteConfig("allowMultipleInstances", false);
                 WriteConfig("theme", 0);
                 config.allowMultipleInstances = false;
-                config.closeOnLoad = config.closeOnExit;
+                config.closeOnLoad = config.closeOnExit ?? false;
             }
 
-            checkBox1.Checked = config.closeOnLoad;
-            checkBox2.Checked = config.allowMultipleInstances;
+            checkBox1.Checked = config.closeOnLoad ?? false;
+            checkBox2.Checked = config.allowMultipleInstances ?? false;
             LoadTheme();
             WriteConfig("lastVersion", currentVersion);
         }
@@ -664,16 +677,16 @@ namespace XPSLauncher
                 switch (theme)
                 {
                     case 1:
-                        SetThemeColor(System.Drawing.Color.FromArgb(0, 0, 0));
+                        SetThemeColor(Color.FromArgb(0, 0, 0));
                         break;
                     case 2:
-                        SetThemeColor(System.Drawing.Color.FromArgb(25, 0, 50));
+                        SetThemeColor(Color.FromArgb(25, 0, 50));
                         break;
                     case 3:
-                        SetThemeColor(System.Drawing.Color.FromArgb(0, 0, 50));
+                        SetThemeColor(Color.FromArgb(0, 0, 50));
                         break;
                     default:
-                        SetThemeColor(System.Drawing.Color.FromArgb(50, 50, 50));
+                        SetThemeColor(Color.FromArgb(50, 50, 50));
                         break;
                 }
             }
