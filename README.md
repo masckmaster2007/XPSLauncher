@@ -1,4 +1,4 @@
-# XPS Launcher
-The official windows launcher source for XPS
+# XPS Launcher (legacy)
+Pre-windows forms app version
 
-More information coming soon
+Branch will not be updated
