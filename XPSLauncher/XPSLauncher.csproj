@@ -106,6 +106,9 @@
     <None Include="Resources\Tools.png" />
     <None Include="Resources\Website.png" />
     <None Include="Resources\Settings.png" />
+    <None Include="Resources\Exit.png" />
+    <None Include="Resources\Unchecked.png" />
+    <None Include="Resources\Checked.png" />
     <Content Include="XPS.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

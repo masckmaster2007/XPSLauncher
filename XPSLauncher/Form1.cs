@@ -16,7 +16,7 @@ namespace XPSLauncher
     public partial class Form1 : Form
     {
         private static readonly HttpClient client = new HttpClient();
-        private static readonly string currentVersion = "2.3.2";
+        private static readonly string currentVersion = "2.3.3";
         private PrivateFontCollection privateFonts = new PrivateFontCollection();
         private Dictionary<string, bool> downloadingVersions = new Dictionary<string, bool>()
         {
@@ -33,6 +33,8 @@ namespace XPSLauncher
             { "1.9", false }
         };
         private static bool settingsOpen = false;
+        private static bool settingCloseOnLoad = false;
+        private static bool settingAllowMultipleInstances = false;
 
         public Form1()
         {
@@ -72,8 +74,8 @@ namespace XPSLauncher
             button7.Font = new Font(privateFonts.Families[0], 13.5F);
             button8.Font = new Font(privateFonts.Families[0], 10.5F);
             label1.Font = new Font(privateFonts.Families[0], 15.75F);
-            checkBox1.Font = new Font(privateFonts.Families[0], 15.75F);
-            checkBox2.Font = new Font(privateFonts.Families[0], 15.75F);
+            label7.Font = new Font(privateFonts.Families[0], 15.75F);
+            label8.Font = new Font(privateFonts.Families[0], 15.75F);
             label2.Font = new Font(privateFonts.Families[0], 20.0F);
             label3.Font = new Font(privateFonts.Families[0], 13.5F);
             label4.Font = new Font(privateFonts.Families[0], 13.5F);
@@ -164,11 +166,10 @@ namespace XPSLauncher
 
             if (File.Exists(path) && !downloadingVersions[version] && !errorVersions[version])
             {
-                dynamic config = ReadConfig();
-                if ((bool)config.allowMultipleInstances || !IsProcessOpen(path))
+                if (settingAllowMultipleInstances || !IsProcessOpen(path))
                 {
                     StartProcess(path);
-                    if ((bool)config.closeOnLoad)
+                    if (settingCloseOnLoad && !downloadingVersions["2.2"] && !downloadingVersions["2.1"] && !downloadingVersions["2.0"] && !downloadingVersions["1.9"])
                     {
                         Environment.Exit(0);
                     }
@@ -241,6 +242,77 @@ namespace XPSLauncher
             ToggleSettings();
         }
 
+        private void ExitButton(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        private void RestartButton(object sender, EventArgs e)
+        {
+            Application.Restart();
+            Environment.Exit(0);
+        }
+
+        private void ResetConfigButton(object sender, EventArgs e)
+        {
+            ResetConfig();
+        }
+
+        private void DarkThemeButton(object sender, EventArgs e)
+        {
+            WriteConfig("theme", 0);
+            LoadTheme();
+        }
+
+        private void AmoledThemeButton(object sender, EventArgs e)
+        {
+            WriteConfig("theme", 1);
+            LoadTheme();
+        }
+
+        private void PurpleThemeButton(object sender, EventArgs e)
+        {
+            WriteConfig("theme", 2);
+            LoadTheme();
+        }
+
+        private void BlueThemeButton(object sender, EventArgs e)
+        {
+            WriteConfig("theme", 3);
+            LoadTheme();
+        }
+
+        private void OpenAppDataButton(object sender, EventArgs e)
+        {
+            string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string xpsPath = Path.Combine(localAppDataPath, "XPS");
+            if (!Directory.Exists(xpsPath))
+            {
+                Directory.CreateDirectory(xpsPath);
+            }
+            try
+            {
+                Process.Start("explorer.exe", xpsPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening the XPS folder. Create a support ticket in the Discord and we will try to help you.\n\nError message: {ex.Message}", $"Error opening XPS folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void OpenAppFolderButton(object sender, EventArgs e)
+        {
+            string executionPath = GetExecutionPath();
+            try
+            {
+                Process.Start("explorer.exe", executionPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening the XPS folder. Create a support ticket in the Discord and we will try to help you.\n\nError message: {ex.Message}", $"Error opening XPS folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private async void CheckVersion()
         {
             var versionCheckResult = await CheckVersionAsync();
@@ -278,11 +350,12 @@ namespace XPSLauncher
             string[] versions = { "2.2", "2.1", "2.0", "1.9" };
             foreach (string version in versions)
             {
-                string path = Path.Combine(executionPath, "gdps", version);
-                if (!Directory.Exists(path))
+                string folder = Path.Combine(executionPath, "gdps", version);
+                string path = Path.Combine(executionPath, "gdps", version, "XPS.exe");
+                if (!Directory.Exists(folder) || !File.Exists(path))
                 {
                     downloadingVersions[version] = true;
-                    Directory.CreateDirectory(path);
+                    Directory.CreateDirectory(folder);
                     DownloadAndExtractFiles(version);
                 }
             }
@@ -306,12 +379,26 @@ namespace XPSLauncher
                         {
                             await response.Content.CopyToAsync(fileStream);
                         }
+                        if (Directory.Exists(extractPath))
+                        {
+                            DirectoryInfo di = new DirectoryInfo(extractPath);
+                            foreach (FileInfo file in di.GetFiles())
+                            {
+                                file.Delete();
+                            }
+                            foreach (DirectoryInfo dir in di.GetDirectories())
+                            {
+                                dir.Delete(true);
+                            }
+                        }
+
                         ZipFile.ExtractToDirectory(zipPath, extractPath);
                         if (File.Exists(zipPath))
                         {
                             File.Delete(zipPath);
                         }
                         downloadingVersions[version] = false;
+                        errorVersions[version] = false;
                         MessageBox.Show($"Version {version} has been downloaded successfully!", $"Downloaded {version}", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
@@ -471,8 +558,6 @@ namespace XPSLauncher
                 this.pictureBox2.Visible = true;
 
                 //disable stuff
-                this.checkBox1.Visible = false;
-                this.checkBox2.Visible = false;
                 this.button5.Visible = false;
                 this.button6.Visible = false;
                 this.button7.Visible = false;
@@ -486,6 +571,12 @@ namespace XPSLauncher
                 this.label5.Visible = false;
                 this.panel4.Visible = false;
                 this.label6.Visible = false;
+                this.label7.Visible = false;
+                this.label8.Visible = false;
+                this.pictureBox10.Visible = false;
+                this.pictureBox11.Visible = false;
+                this.pictureBox12.Visible = false;
+                this.pictureBox13.Visible = false;
                 this.button1.Focus();
                 settingsOpen = false;
             }
@@ -505,8 +596,6 @@ namespace XPSLauncher
                 this.pictureBox2.Visible = false;
 
                 //enable stuff
-                this.checkBox1.Visible = true;
-                this.checkBox2.Visible = true;
                 this.button5.Visible = true;
                 this.button6.Visible = true;
                 this.button7.Visible = true;
@@ -520,61 +609,27 @@ namespace XPSLauncher
                 this.label5.Visible = true;
                 this.panel4.Visible = true;
                 this.label6.Visible = true;
+                this.label7.Visible = true;
+                this.label8.Visible = true;
+                if (!settingCloseOnLoad)
+                {
+                    this.pictureBox11.Visible = true;
+                }
+                else
+                {
+                    this.pictureBox13.Visible = true;
+                }
+                if (!settingAllowMultipleInstances)
+                {
+                    this.pictureBox10.Visible = true;
+                }
+                else
+                {
+                    this.pictureBox12.Visible = true;
+                }
                 this.button5.Focus();
                 settingsOpen = true;
             }
-        }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            WriteConfig("closeOnLoad", checkBox1.Checked);
-        }
-
-        private void checkBox2_CheckedChanged(object sender, EventArgs e)
-        {
-            WriteConfig("allowMultipleInstances", checkBox2.Checked);
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            string executionPath = GetExecutionPath();
-            try
-            {
-                Process.Start("explorer.exe", executionPath);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error opening the XPS folder. Create a support ticket in the Discord and we will try to help you.\n\nError message: {ex.Message}", $"Error opening XPS folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string xpsPath = Path.Combine(localAppDataPath, "XPS");
-            if (!Directory.Exists(xpsPath))
-            {
-                Directory.CreateDirectory(xpsPath);
-            }
-            try
-            {
-                Process.Start("explorer.exe", xpsPath);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error opening the XPS folder. Create a support ticket in the Discord and we will try to help you.\n\nError message: {ex.Message}", $"Error opening XPS folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-            Application.Restart();
-            Environment.Exit(0);
-        }
-
-        private void button8_Click(object sender, EventArgs e)
-        {
-            ResetConfig();
         }
 
         private void ResetConfig()
@@ -590,8 +645,18 @@ namespace XPSLauncher
             {
                 File.Delete(configPath);
             }
-            checkBox1.Checked = false;
-            checkBox2.Checked = false;
+            if (settingsOpen && settingCloseOnLoad)
+            {
+                pictureBox13.Visible = false;
+                pictureBox11.Visible = true;
+            }
+            if (settingsOpen && settingAllowMultipleInstances)
+            {
+                pictureBox12.Visible = false;
+                pictureBox10.Visible = true;
+            }
+            settingAllowMultipleInstances = false;
+            settingAllowMultipleInstances = false;
             SetThemeColor(Color.FromArgb(50, 50, 50));
             dynamic json = new
             {
@@ -662,8 +727,18 @@ namespace XPSLauncher
                 config.closeOnLoad = config.closeOnExit ?? false;
             }
 
-            checkBox1.Checked = config.closeOnLoad ?? false;
-            checkBox2.Checked = config.allowMultipleInstances ?? false;
+            settingCloseOnLoad = config.closeOnLoad;
+            settingAllowMultipleInstances = config.allowMultipleInstances;
+            if (settingsOpen && settingCloseOnLoad)
+            {
+                pictureBox13.Visible = false;
+                pictureBox11.Visible = true;
+            }
+            if (settingsOpen && settingAllowMultipleInstances)
+            {
+                pictureBox12.Visible = false;
+                pictureBox10.Visible = true;
+            }
             LoadTheme();
             WriteConfig("lastVersion", currentVersion);
         }
@@ -709,28 +784,38 @@ namespace XPSLauncher
             this.pictureBox1.BackColor = color;
         }
 
-        private void panel1_Click(object sender, EventArgs e)
+        private void ToggleCloseOnLoad(object sender = null, EventArgs e = null)
         {
-            WriteConfig("theme", 0);
-            LoadTheme();
+            if (settingCloseOnLoad)
+            {
+                settingCloseOnLoad = false;
+                pictureBox13.Visible = false;
+                pictureBox11.Visible = true;
+            }
+            else
+            {
+                settingCloseOnLoad = true;
+                pictureBox13.Visible = true;
+                pictureBox11.Visible = false;
+            }
+            WriteConfig("closeOnLoad", settingAllowMultipleInstances);
         }
 
-        private void panel2_Click(object sender, EventArgs e)
+        private void ToggleMultiInstance(object sender = null, EventArgs e = null)
         {
-            WriteConfig("theme", 1);
-            LoadTheme();
-        }
-
-        private void panel3_Click(object sender, EventArgs e)
-        {
-            WriteConfig("theme", 2);
-            LoadTheme();
-        }
-
-        private void panel4_Click(object sender, EventArgs e)
-        {
-            WriteConfig("theme", 3);
-            LoadTheme();
+            if (settingAllowMultipleInstances)
+            {
+                settingAllowMultipleInstances = false;
+                pictureBox12.Visible = false;
+                pictureBox10.Visible = true;
+            }
+            else
+            {
+                settingAllowMultipleInstances = true;
+                pictureBox12.Visible = true;
+                pictureBox10.Visible = false;
+            }
+            WriteConfig("allowMultipleInstances", settingAllowMultipleInstances);
         }
     }
 }
