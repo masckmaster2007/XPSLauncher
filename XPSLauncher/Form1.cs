@@ -16,7 +16,7 @@ namespace XPSLauncher
     public partial class Form1 : Form
     {
         private static readonly HttpClient client = new HttpClient();
-        private static readonly string currentVersion = "2.3.3";
+        private static readonly string currentVersion = "2.3.4";
         private PrivateFontCollection privateFonts = new PrivateFontCollection();
         private Dictionary<string, bool> downloadingVersions = new Dictionary<string, bool>()
         {
@@ -798,7 +798,7 @@ namespace XPSLauncher
                 pictureBox13.Visible = true;
                 pictureBox11.Visible = false;
             }
-            WriteConfig("closeOnLoad", settingAllowMultipleInstances);
+            WriteConfig("closeOnLoad", settingCloseOnLoad);
         }
 
         private void ToggleMultiInstance(object sender = null, EventArgs e = null)
