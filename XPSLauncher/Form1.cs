@@ -16,7 +16,7 @@ namespace XPSLauncher
     public partial class Form1 : Form
     {
         private static readonly HttpClient client = new HttpClient();
-        private static readonly string currentVersion = "2.3.5";
+        private static readonly string currentVersion = "2.3.7";
         private PrivateFontCollection privateFonts = new PrivateFontCollection();
         private Dictionary<string, bool> downloadingVersions = new Dictionary<string, bool>()
         {
@@ -276,7 +276,7 @@ namespace XPSLauncher
             LoadTheme();
         }
 
-        private void BlueThemeButton(object sender, EventArgs e)
+        private void RedThemeButton(object sender, EventArgs e)
         {
             WriteConfig("theme", 3);
             LoadTheme();
@@ -366,7 +366,7 @@ namespace XPSLauncher
             string executionPath = GetExecutionPath();
             string zipPath = Path.Combine(executionPath, $"pkg-{version}.zip");
             string extractPath = Path.Combine(executionPath, "gdps", version);
-            string downloadUrl = $"https://xps.xytriza.com/download/windows/package-{version}.zip";
+            string downloadUrl = $"https://storage.googleapis.com/xytriza-uploading-service/xpsdownloads/packages/package-win-{version}.zip";
 
             try
             {
@@ -758,7 +758,7 @@ namespace XPSLauncher
                         SetThemeColor(Color.FromArgb(25, 0, 50));
                         break;
                     case 3:
-                        SetThemeColor(Color.FromArgb(0, 0, 50));
+                        SetThemeColor(Color.FromArgb(35, 0, 0));
                         break;
                     default:
                         SetThemeColor(Color.FromArgb(50, 50, 50));

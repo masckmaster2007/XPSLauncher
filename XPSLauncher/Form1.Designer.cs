@@ -81,7 +81,7 @@ namespace XPSLauncher
             // 
             // button1
             // 
-            this.button1.Cursor = System.Windows.Forms.Cursors.No;
+            this.button1.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.button1.Location = new System.Drawing.Point(240, 176);
@@ -94,7 +94,7 @@ namespace XPSLauncher
             // 
             // button2
             // 
-            this.button2.Cursor = System.Windows.Forms.Cursors.No;
+            this.button2.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button2.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.button2.Location = new System.Drawing.Point(240, 275);
@@ -106,7 +106,7 @@ namespace XPSLauncher
             // 
             // button3
             // 
-            this.button3.Cursor = System.Windows.Forms.Cursors.No;
+            this.button3.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button3.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.button3.Location = new System.Drawing.Point(240, 374);
@@ -119,7 +119,7 @@ namespace XPSLauncher
             // 
             // button4
             // 
-            this.button4.Cursor = System.Windows.Forms.Cursors.No;
+            this.button4.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button4.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.button4.Location = new System.Drawing.Point(240, 473);
@@ -247,23 +247,23 @@ namespace XPSLauncher
             // 
             this.label6.AutoSize = true;
             this.label6.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label6.Location = new System.Drawing.Point(394, 400);
+            this.label6.Location = new System.Drawing.Point(399, 400);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(28, 13);
+            this.label6.Size = new System.Drawing.Size(27, 13);
             this.label6.TabIndex = 25;
-            this.label6.Text = "Blue";
+            this.label6.Text = "Red";
             this.label6.Visible = false;
             // 
             // panel4
             // 
-            this.panel4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(50)))));
+            this.panel4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel4.Location = new System.Drawing.Point(388, 328);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(64, 64);
             this.panel4.TabIndex = 24;
             this.panel4.Visible = false;
-            this.panel4.Click += new System.EventHandler(this.BlueThemeButton);
+            this.panel4.Click += new System.EventHandler(this.RedThemeButton);
             // 
             // button7
             // 
@@ -324,8 +324,8 @@ namespace XPSLauncher
             this.pictureBox11.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox11.TabIndex = 32;
             this.pictureBox11.TabStop = false;
-            this.pictureBox11.Click += new System.EventHandler(this.ToggleCloseOnLoad);
             this.pictureBox11.Visible = false;
+            this.pictureBox11.Click += new System.EventHandler(this.ToggleCloseOnLoad);
             // 
             // pictureBox10
             // 
@@ -336,8 +336,8 @@ namespace XPSLauncher
             this.pictureBox10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox10.TabIndex = 31;
             this.pictureBox10.TabStop = false;
-            this.pictureBox10.Click += new System.EventHandler(this.ToggleMultiInstance);
             this.pictureBox10.Visible = false;
+            this.pictureBox10.Click += new System.EventHandler(this.ToggleMultiInstance);
             // 
             // pictureBox9
             // 
@@ -455,8 +455,8 @@ namespace XPSLauncher
             this.pictureBox12.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox12.TabIndex = 33;
             this.pictureBox12.TabStop = false;
-            this.pictureBox12.Click += new System.EventHandler(this.ToggleMultiInstance);
             this.pictureBox12.Visible = false;
+            this.pictureBox12.Click += new System.EventHandler(this.ToggleMultiInstance);
             // 
             // pictureBox13
             // 
@@ -467,8 +467,8 @@ namespace XPSLauncher
             this.pictureBox13.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox13.TabIndex = 34;
             this.pictureBox13.TabStop = false;
-            this.pictureBox13.Click += new System.EventHandler(this.ToggleCloseOnLoad);
             this.pictureBox13.Visible = false;
+            this.pictureBox13.Click += new System.EventHandler(this.ToggleCloseOnLoad);
             // 
             // Form1
             // 
