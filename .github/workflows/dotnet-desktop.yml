@@ -21,6 +21,9 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
+    - name: Restore NuGet packages
+      run: dotnet restore XPSLauncher.sln
+
     - name: Build Application
       run: dotnet build --configuration ${{ matrix.configuration }} XPSLauncher.sln
 
