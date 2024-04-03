@@ -10,13 +10,15 @@ using System.Windows.Forms;
 using System.IO.Compression;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Management;
 
 namespace XPSLauncher
 {
     public partial class Form1 : Form
     {
         private static readonly HttpClient client = new HttpClient();
-        private static readonly string currentVersion = "2.3.7";
+        private static readonly string currentVersion = "2.3.8";
         private PrivateFontCollection privateFonts = new PrivateFontCollection();
         private Dictionary<string, bool> downloadingVersions = new Dictionary<string, bool>()
         {
@@ -35,6 +37,17 @@ namespace XPSLauncher
         private static bool settingsOpen = false;
         private static bool settingCloseOnLoad = false;
         private static bool settingAllowMultipleInstances = false;
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
         public Form1()
         {
@@ -47,9 +60,9 @@ namespace XPSLauncher
                 }
 
                 InitializeComponent();
-                this.FormBorderStyle = FormBorderStyle.FixedSingle;
-                this.MaximizeBox = false;
-                this.pictureBox1.SendToBack();
+                FormBorderStyle = FormBorderStyle.FixedSingle;
+                MaximizeBox = false;
+                pictureBox1.SendToBack();
                 ConvertOnLoad();
                 LoadFontFromFile();
                 CheckVersion();
@@ -58,6 +71,7 @@ namespace XPSLauncher
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading XPS. Error message: {ex.Message}", $"Error loading XPS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(0);
             }
         }
 
@@ -122,7 +136,7 @@ namespace XPSLauncher
 
         private void launchGDPS(string version)
         {
-            if (!this.button1.Visible || !this.button2.Visible || !this.button3.Visible || !this.button4.Visible)
+            if (!button1.Visible || !button2.Visible || !button3.Visible || !button4.Visible)
             {
                 return;
             }
@@ -176,7 +190,12 @@ namespace XPSLauncher
                 }
                 else
                 {
-                    MessageBox.Show(Text = $"XPS {version} is already running. If you would like to open another instance, enable the \"Allow multiple instances\" setting in the settings menu.", $"Error loading version {version}", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    List<int> pids = GetPIDsByApplicationPath(path);
+
+                    foreach (int pid in pids)
+                    {
+                        SelectApp(pid);
+                    }
                     return;
                 }
             }
@@ -232,9 +251,9 @@ namespace XPSLauncher
             OpenUrl("https://xps.xytriza.com");
         }
 
-        private void ToolsButton(object sender, EventArgs e)
+        private void DashboardButton(object sender, EventArgs e)
         {
-            OpenUrl("https://xps.xytriza.com/tools");
+            OpenUrl("https://dashboard.xps.xytriza.com");
         }
 
         private void SettingsButton(object sender, EventArgs e)
@@ -316,10 +335,10 @@ namespace XPSLauncher
         private async void CheckVersion()
         {
             var versionCheckResult = await CheckVersionAsync();
-            this.button1.UseWaitCursor = false;
-            this.button2.UseWaitCursor = false;
-            this.button3.UseWaitCursor = false;
-            this.button4.UseWaitCursor = false;
+            button1.UseWaitCursor = false;
+            button2.UseWaitCursor = false;
+            button3.UseWaitCursor = false;
+            button4.UseWaitCursor = false;
             if (versionCheckResult.HasError)
             {
                 MessageBox.Show("Error checking version. Check your internet connection or try again later", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -331,16 +350,16 @@ namespace XPSLauncher
             }
             else
             {
-                this.button1.Cursor = Cursors.Hand;
-                this.button2.Cursor = Cursors.Hand;
-                this.button3.Cursor = Cursors.Hand;
-                this.button4.Cursor = Cursors.Hand;
-                this.button1.Click += new EventHandler(this.load22);
-                this.button2.Click += new EventHandler(this.load21);
-                this.button3.Click += new EventHandler(this.load20);
-                this.button4.Click += new EventHandler(this.load19);
-                this.KeyPreview = true;
-                this.KeyPress += MainForm_KeyPress;
+                button1.Cursor = Cursors.Hand;
+                button2.Cursor = Cursors.Hand;
+                button3.Cursor = Cursors.Hand;
+                button4.Cursor = Cursors.Hand;
+                button1.Click += new EventHandler(load22);
+                button2.Click += new EventHandler(load21);
+                button3.Click += new EventHandler(load20);
+                button4.Click += new EventHandler(this.load19);
+                KeyPreview = true;
+                KeyPress += MainForm_KeyPress;
             }
         }
 
@@ -545,89 +564,89 @@ namespace XPSLauncher
             if (settingsOpen)
             {
                 //enable stuff
-                this.button1.Visible = true;
-                this.button2.Visible = true;
-                this.button3.Visible = true;
-                this.button4.Visible = true;
-                this.label1.Visible = true;
-                this.pictureBox7.Visible = true;
-                this.pictureBox6.Visible = true;
-                this.pictureBox5.Visible = true;
-                this.pictureBox4.Visible = true;
-                this.pictureBox3.Visible = true;
-                this.pictureBox2.Visible = true;
+                button1.Visible = true;
+                button2.Visible = true;
+                button3.Visible = true;
+                button4.Visible = true;
+                label1.Visible = true;
+                pictureBox7.Visible = true;
+                pictureBox6.Visible = true;
+                pictureBox5.Visible = true;
+                pictureBox4.Visible = true;
+                pictureBox3.Visible = true;
+                pictureBox2.Visible = true;
 
                 //disable stuff
-                this.button5.Visible = false;
-                this.button6.Visible = false;
-                this.button7.Visible = false;
-                this.button8.Visible = false;
-                this.label2.Visible = false;
-                this.panel1.Visible = false;
-                this.label3.Visible = false;
-                this.panel2.Visible = false;
-                this.label4.Visible = false;
-                this.panel3.Visible = false;
-                this.label5.Visible = false;
-                this.panel4.Visible = false;
-                this.label6.Visible = false;
-                this.label7.Visible = false;
-                this.label8.Visible = false;
-                this.pictureBox10.Visible = false;
-                this.pictureBox11.Visible = false;
-                this.pictureBox12.Visible = false;
-                this.pictureBox13.Visible = false;
-                this.button1.Focus();
+                button5.Visible = false;
+                button6.Visible = false;
+                button7.Visible = false;
+                button8.Visible = false;
+                label2.Visible = false;
+                panel1.Visible = false;
+                label3.Visible = false;
+                panel2.Visible = false;
+                label4.Visible = false;
+                panel3.Visible = false;
+                label5.Visible = false;
+                panel4.Visible = false;
+                label6.Visible = false;
+                label7.Visible = false;
+                label8.Visible = false;
+                pictureBox10.Visible = false;
+                pictureBox11.Visible = false;
+                pictureBox12.Visible = false;
+                pictureBox13.Visible = false;
+                button1.Focus();
                 settingsOpen = false;
             }
             else
             {
                 //disable stuff
-                this.button1.Visible = false;
-                this.button2.Visible = false;
-                this.button3.Visible = false;
-                this.button4.Visible = false;
-                this.label1.Visible = false;
-                this.pictureBox7.Visible = false;
-                this.pictureBox6.Visible = false;
-                this.pictureBox5.Visible = false;
-                this.pictureBox4.Visible = false;
-                this.pictureBox3.Visible = false;
-                this.pictureBox2.Visible = false;
+                button1.Visible = false;
+                button2.Visible = false;
+                button3.Visible = false;
+                button4.Visible = false;
+                label1.Visible = false;
+                pictureBox7.Visible = false;
+                pictureBox6.Visible = false;
+                pictureBox5.Visible = false;
+                pictureBox4.Visible = false;
+                pictureBox3.Visible = false;
+                pictureBox2.Visible = false;
 
                 //enable stuff
-                this.button5.Visible = true;
-                this.button6.Visible = true;
-                this.button7.Visible = true;
-                this.button8.Visible = true;
-                this.label2.Visible = true;
-                this.panel1.Visible = true;
-                this.label3.Visible = true;
-                this.panel2.Visible = true;
-                this.label4.Visible = true;
-                this.panel3.Visible = true;
-                this.label5.Visible = true;
-                this.panel4.Visible = true;
-                this.label6.Visible = true;
-                this.label7.Visible = true;
-                this.label8.Visible = true;
+                button5.Visible = true;
+                button6.Visible = true;
+                button7.Visible = true;
+                button8.Visible = true;
+                label2.Visible = true;
+                panel1.Visible = true;
+                label3.Visible = true;
+                panel2.Visible = true;
+                label4.Visible = true;
+                panel3.Visible = true;
+                label5.Visible = true;
+                panel4.Visible = true;
+                label6.Visible = true;
+                label7.Visible = true;
+                label8.Visible = true;
                 if (!settingCloseOnLoad)
                 {
-                    this.pictureBox11.Visible = true;
+                    pictureBox11.Visible = true;
                 }
                 else
                 {
-                    this.pictureBox13.Visible = true;
+                    pictureBox13.Visible = true;
                 }
                 if (!settingAllowMultipleInstances)
                 {
-                    this.pictureBox10.Visible = true;
+                    pictureBox10.Visible = true;
                 }
                 else
                 {
-                    this.pictureBox12.Visible = true;
+                    pictureBox12.Visible = true;
                 }
-                this.button5.Focus();
+                button5.Focus();
                 settingsOpen = true;
             }
         }
@@ -715,32 +734,39 @@ namespace XPSLauncher
 
         private void ConvertOnLoad()
         {
-            dynamic config = ReadConfig();
+            try
+            {
+                dynamic config = ReadConfig();
 
-            if (config.lastVersion == "2.2.0")
-            {
-                RemoveConfigValue("closeOnExit");
-                WriteConfig("closeOnLoad", config.closeOnExit ?? false);
-                WriteConfig("allowMultipleInstances", false);
-                WriteConfig("theme", 0);
-                config.allowMultipleInstances = false;
-                config.closeOnLoad = config.closeOnExit ?? false;
-            }
+                if (config.lastVersion == "2.2.0")
+                {
+                    RemoveConfigValue("closeOnExit");
+                    WriteConfig("closeOnLoad", config.closeOnExit ?? false);
+                    WriteConfig("allowMultipleInstances", false);
+                    WriteConfig("theme", 0);
+                    config.allowMultipleInstances = false;
+                    config.closeOnLoad = config.closeOnExit ?? false;
+                }
 
-            settingCloseOnLoad = config.closeOnLoad;
-            settingAllowMultipleInstances = config.allowMultipleInstances;
-            if (settingsOpen && settingCloseOnLoad)
-            {
-                pictureBox13.Visible = false;
-                pictureBox11.Visible = true;
+                settingCloseOnLoad = config.closeOnLoad;
+                settingAllowMultipleInstances = config.allowMultipleInstances;
+                if (settingsOpen && settingCloseOnLoad)
+                {
+                    pictureBox13.Visible = false;
+                    pictureBox11.Visible = true;
+                }
+                if (settingsOpen && settingAllowMultipleInstances)
+                {
+                    pictureBox12.Visible = false;
+                    pictureBox10.Visible = true;
+                }
+                LoadTheme();
+                WriteConfig("lastVersion", currentVersion);
             }
-            if (settingsOpen && settingAllowMultipleInstances)
+            catch
             {
-                pictureBox12.Visible = false;
-                pictureBox10.Visible = true;
+                ResetConfig();
             }
-            LoadTheme();
-            WriteConfig("lastVersion", currentVersion);
         }
 
         private void LoadTheme()
@@ -774,14 +800,14 @@ namespace XPSLauncher
         private void SetThemeColor(Color color)
         {
             this.BackColor = color;
-            this.pictureBox8.BackColor = color;
-            this.pictureBox7.BackColor = color;
-            this.pictureBox6.BackColor = color;
-            this.pictureBox5.BackColor = color;
-            this.pictureBox4.BackColor = color;
-            this.pictureBox3.BackColor = color;
-            this.pictureBox2.BackColor = color;
-            this.pictureBox1.BackColor = color;
+            pictureBox8.BackColor = color;
+            pictureBox7.BackColor = color;
+            pictureBox6.BackColor = color;
+            pictureBox5.BackColor = color;
+            pictureBox4.BackColor = color;
+            pictureBox3.BackColor = color;
+            pictureBox2.BackColor = color;
+            pictureBox1.BackColor = color;
         }
 
         private void ToggleCloseOnLoad(object sender = null, EventArgs e = null)
@@ -816,6 +842,66 @@ namespace XPSLauncher
                 pictureBox10.Visible = false;
             }
             WriteConfig("allowMultipleInstances", settingAllowMultipleInstances);
+        }
+
+        public static IntPtr FindWindowHandle(int pid)
+        {
+            IntPtr windowHandle = IntPtr.Zero;
+
+            EnumWindows(delegate (IntPtr hWnd, IntPtr lParam)
+            {
+                uint windowPid;
+                GetWindowThreadProcessId(hWnd, out windowPid);
+                if (windowPid == pid)
+                {
+                    windowHandle = hWnd;
+                    return false;
+                }
+                return true;
+            }, IntPtr.Zero);
+
+            return windowHandle;
+        }
+
+        public static void SelectApp(int pid)
+        {
+            IntPtr hWnd = FindWindowHandle(pid);
+            if (hWnd != IntPtr.Zero)
+            {
+                SetForegroundWindow(hWnd);
+            }
+        }
+
+        public List<int> GetPIDsByApplicationPath(string applicationPath)
+        {
+            var pids = new List<int>();
+            var query = $"Get-WmiObject Win32_Process | Where-Object {{$_.ExecutablePath -eq '{applicationPath}'}} | Select-Object ProcessId";
+            var startInfo = new ProcessStartInfo("powershell", $"-Command \"{query}\"")
+            {
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using (var process = Process.Start(startInfo))
+            {
+                if (process != null)
+                {
+                    string output = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
+
+                    var lines = output.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var line in lines)
+                    {
+                        if (int.TryParse(line, out var pid))
+                        {
+                            pids.Add(pid);
+                        }
+                    }
+                }
+            }
+
+            return pids;
         }
     }
 }

@@ -51,6 +51,8 @@ namespace XPSLauncher
             this.button8 = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.pictureBox13 = new System.Windows.Forms.PictureBox();
+            this.pictureBox12 = new System.Windows.Forms.PictureBox();
             this.pictureBox11 = new System.Windows.Forms.PictureBox();
             this.pictureBox10 = new System.Windows.Forms.PictureBox();
             this.pictureBox9 = new System.Windows.Forms.PictureBox();
@@ -62,8 +64,8 @@ namespace XPSLauncher
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox12 = new System.Windows.Forms.PictureBox();
-            this.pictureBox13 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox13)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
@@ -75,8 +77,6 @@ namespace XPSLauncher
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox13)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -315,6 +315,30 @@ namespace XPSLauncher
             this.label8.Visible = false;
             this.label8.Click += new System.EventHandler(this.ToggleMultiInstance);
             // 
+            // pictureBox13
+            // 
+            this.pictureBox13.Image = global::XPS.Properties.Resources.Checked;
+            this.pictureBox13.Location = new System.Drawing.Point(109, 119);
+            this.pictureBox13.Name = "pictureBox13";
+            this.pictureBox13.Size = new System.Drawing.Size(31, 31);
+            this.pictureBox13.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox13.TabIndex = 34;
+            this.pictureBox13.TabStop = false;
+            this.pictureBox13.Visible = false;
+            this.pictureBox13.Click += new System.EventHandler(this.ToggleCloseOnLoad);
+            // 
+            // pictureBox12
+            // 
+            this.pictureBox12.Image = global::XPS.Properties.Resources.Checked;
+            this.pictureBox12.Location = new System.Drawing.Point(135, 170);
+            this.pictureBox12.Name = "pictureBox12";
+            this.pictureBox12.Size = new System.Drawing.Size(31, 31);
+            this.pictureBox12.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox12.TabIndex = 33;
+            this.pictureBox12.TabStop = false;
+            this.pictureBox12.Visible = false;
+            this.pictureBox12.Click += new System.EventHandler(this.ToggleMultiInstance);
+            // 
             // pictureBox11
             // 
             this.pictureBox11.Image = global::XPS.Properties.Resources.Unchecked;
@@ -366,14 +390,14 @@ namespace XPSLauncher
             // pictureBox7
             // 
             this.pictureBox7.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox7.Image = global::XPS.Properties.Resources.Tools;
+            this.pictureBox7.Image = global::XPS.Properties.Resources.Dashboard;
             this.pictureBox7.Location = new System.Drawing.Point(4, 520);
             this.pictureBox7.Name = "pictureBox7";
             this.pictureBox7.Size = new System.Drawing.Size(155, 62);
             this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox7.TabIndex = 11;
             this.pictureBox7.TabStop = false;
-            this.pictureBox7.Click += new System.EventHandler(this.ToolsButton);
+            this.pictureBox7.Click += new System.EventHandler(this.DashboardButton);
             // 
             // pictureBox6
             // 
@@ -446,30 +470,6 @@ namespace XPSLauncher
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
             // 
-            // pictureBox12
-            // 
-            this.pictureBox12.Image = global::XPS.Properties.Resources.Checked;
-            this.pictureBox12.Location = new System.Drawing.Point(135, 170);
-            this.pictureBox12.Name = "pictureBox12";
-            this.pictureBox12.Size = new System.Drawing.Size(31, 31);
-            this.pictureBox12.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox12.TabIndex = 33;
-            this.pictureBox12.TabStop = false;
-            this.pictureBox12.Visible = false;
-            this.pictureBox12.Click += new System.EventHandler(this.ToggleMultiInstance);
-            // 
-            // pictureBox13
-            // 
-            this.pictureBox13.Image = global::XPS.Properties.Resources.Checked;
-            this.pictureBox13.Location = new System.Drawing.Point(109, 119);
-            this.pictureBox13.Name = "pictureBox13";
-            this.pictureBox13.Size = new System.Drawing.Size(31, 31);
-            this.pictureBox13.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox13.TabIndex = 34;
-            this.pictureBox13.TabStop = false;
-            this.pictureBox13.Visible = false;
-            this.pictureBox13.Click += new System.EventHandler(this.ToggleCloseOnLoad);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -512,6 +512,8 @@ namespace XPSLauncher
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "XPS";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox13)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
@@ -523,8 +525,6 @@ namespace XPSLauncher
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox13)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
