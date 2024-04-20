@@ -10,15 +10,13 @@ using System.Windows.Forms;
 using System.IO.Compression;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Management;
 
 namespace XPSLauncher
 {
     public partial class Form1 : Form
     {
         private static readonly HttpClient client = new HttpClient();
-        private static readonly string currentVersion = "2.3.8";
+        private static readonly string currentVersion = "2.3.9";
         private PrivateFontCollection privateFonts = new PrivateFontCollection();
         private Dictionary<string, bool> downloadingVersions = new Dictionary<string, bool>()
         {
@@ -34,20 +32,16 @@ namespace XPSLauncher
             { "2.0", false },
             { "1.9", false }
         };
+        private Dictionary<string, bool> launcheQueue = new Dictionary<string, bool>()
+        {
+            { "2.2", false },
+            { "2.1", false },
+            { "2.0", false },
+            { "1.9", false }
+        };
         private static bool settingsOpen = false;
         private static bool settingCloseOnLoad = false;
         private static bool settingAllowMultipleInstances = false;
-        [DllImport("user32.dll")]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-
-        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
         public Form1()
         {
@@ -134,7 +128,7 @@ namespace XPSLauncher
             }
         }
 
-        private void launchGDPS(string version)
+        private void launchGDPS(string version, bool forceOpen = false)
         {
             if (!button1.Visible || !button2.Visible || !button3.Visible || !button4.Visible)
             {
@@ -144,15 +138,24 @@ namespace XPSLauncher
             string executionPath = GetExecutionPath();
             string path = "";
 
-            if (Control.ModifierKeys == Keys.Shift)
+            if (ModifierKeys == Keys.Shift)
             {
                 ResetGDPS(version);
                 return;
             }
-
+            
+            if (launcheQueue[version])
+            {
+                return;
+            }
             if (downloadingVersions[version])
             {
-                MessageBox.Show($"Version {version} is currently being downloaded. Please wait until the download is complete.", $"Downloading {version}", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                DialogResult dialogResult = MessageBox.Show($"Version {version} is currently being downloaded. Would you like to add it to the launch queue?", $"Downloading {version}", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                if (dialogResult == DialogResult.Yes && downloadingVersions[version])
+                {
+                    launcheQueue[version] = true;
+                    return;
+                }
                 return;
             }
             if (errorVersions[version])
@@ -180,7 +183,7 @@ namespace XPSLauncher
 
             if (File.Exists(path) && !downloadingVersions[version] && !errorVersions[version])
             {
-                if (settingAllowMultipleInstances || !IsProcessOpen(path))
+                if (settingAllowMultipleInstances || !IsProcessOpen(path) || forceOpen)
                 {
                     StartProcess(path);
                     if(version = "1.9") {
@@ -193,11 +196,10 @@ namespace XPSLauncher
                 }
                 else
                 {
-                    List<int> pids = GetPIDsByApplicationPath(path);
-
-                    foreach (int pid in pids)
+                    DialogResult result = MessageBox.Show($"XPS is already running. Would you like to force open XPS?\n\nContinuing can result in save data loss.", "XPS already open", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                    if (result == DialogResult.Yes)
                     {
-                        SelectApp(pid);
+                        launchGDPS(version, true);
                     }
                     return;
                 }
@@ -388,7 +390,7 @@ namespace XPSLauncher
             string executionPath = GetExecutionPath();
             string zipPath = Path.Combine(executionPath, $"pkg-{version}.zip");
             string extractPath = Path.Combine(executionPath, "gdps", version);
-            string downloadUrl = $"https://storage.googleapis.com/xytriza-uploading-service/xpsdownloads/packages/package-win-{version}.zip";
+            string downloadUrl = $"https://xps.xytriza.com/assets/package-win-{version}.zip";
 
             try
             {
@@ -421,7 +423,11 @@ namespace XPSLauncher
                         }
                         downloadingVersions[version] = false;
                         errorVersions[version] = false;
-                        MessageBox.Show($"Version {version} has been downloaded successfully!", $"Downloaded {version}", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        if (launcheQueue[version])
+                        {
+                            launcheQueue[version] = false;
+                            launchGDPS(version);
+                        }
                     }
                     else
                     {
@@ -845,34 +851,6 @@ namespace XPSLauncher
                 pictureBox10.Visible = false;
             }
             WriteConfig("allowMultipleInstances", settingAllowMultipleInstances);
-        }
-
-        public static IntPtr FindWindowHandle(int pid)
-        {
-            IntPtr windowHandle = IntPtr.Zero;
-
-            EnumWindows(delegate (IntPtr hWnd, IntPtr lParam)
-            {
-                uint windowPid;
-                GetWindowThreadProcessId(hWnd, out windowPid);
-                if (windowPid == pid)
-                {
-                    windowHandle = hWnd;
-                    return false;
-                }
-                return true;
-            }, IntPtr.Zero);
-
-            return windowHandle;
-        }
-
-        public static void SelectApp(int pid)
-        {
-            IntPtr hWnd = FindWindowHandle(pid);
-            if (hWnd != IntPtr.Zero)
-            {
-                SetForegroundWindow(hWnd);
-            }
         }
 
         public List<int> GetPIDsByApplicationPath(string applicationPath)
