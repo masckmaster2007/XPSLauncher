@@ -417,7 +417,7 @@ namespace XPSLauncher
             this.pictureBox5.Image = global::XPS.Properties.Resources.Twitch;
             this.pictureBox5.Location = new System.Drawing.Point(517, 571);
             this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(65, 62);
+            this.pictureBox5.Size = new System.Drawing.Size(64, 64);
             this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox5.TabIndex = 9;
             this.pictureBox5.TabStop = false;
@@ -429,7 +429,7 @@ namespace XPSLauncher
             this.pictureBox4.Image = global::XPS.Properties.Resources.YouTube;
             this.pictureBox4.Location = new System.Drawing.Point(447, 571);
             this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(61, 62);
+            this.pictureBox4.Size = new System.Drawing.Size(64, 64);
             this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox4.TabIndex = 8;
             this.pictureBox4.TabStop = false;
@@ -441,7 +441,7 @@ namespace XPSLauncher
             this.pictureBox3.Image = global::XPS.Properties.Resources.Twitter;
             this.pictureBox3.Location = new System.Drawing.Point(376, 571);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(61, 62);
+            this.pictureBox3.Size = new System.Drawing.Size(64, 64);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox3.TabIndex = 7;
             this.pictureBox3.TabStop = false;
@@ -453,7 +453,7 @@ namespace XPSLauncher
             this.pictureBox2.Image = global::XPS.Properties.Resources.Discord;
             this.pictureBox2.Location = new System.Drawing.Point(306, 571);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(61, 62);
+            this.pictureBox2.Size = new System.Drawing.Size(64, 64);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 6;
             this.pictureBox2.TabStop = false;
@@ -463,9 +463,9 @@ namespace XPSLauncher
             // 
             this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Default;
             this.pictureBox1.Image = global::XPS.Properties.Resources.logoPng;
-            this.pictureBox1.Location = new System.Drawing.Point(190, -60);
+            this.pictureBox1.Location = new System.Drawing.Point(172, -60);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(222, 238);
+            this.pictureBox1.Size = new System.Drawing.Size(256, 256);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;

@@ -42,6 +42,7 @@ namespace XPSLauncher
         private static bool settingsOpen = false;
         private static bool settingCloseOnLoad = false;
         private static bool settingAllowMultipleInstances = false;
+        private static bool settingFix19GJP = false;
 
         public Form1()
         {
@@ -183,10 +184,10 @@ namespace XPSLauncher
 
             if (File.Exists(path) && !downloadingVersions[version] && !errorVersions[version])
             {
-                if (settingAllowMultipleInstances || !IsProcessOpen(path) || forceOpen)
+                if ((settingAllowMultipleInstances && !IsProcessOpen(path)) || forceOpen)
                 {
                     StartProcess(path);
-                    if(version == "1.9") {
+                    if(version == "1.9" && settingFix19GJP) {
                         StartProcess(Path.Combine(executionPath, "gdps", "1.9", "XPS-Proxy.exe"));
                     }
                     if (settingCloseOnLoad && !downloadingVersions["2.2"] && !downloadingVersions["2.1"] && !downloadingVersions["2.0"] && !downloadingVersions["1.9"])
@@ -691,7 +692,8 @@ namespace XPSLauncher
                 lastVersion = currentVersion,
                 closeOnLoad = false,
                 allowMultipleInstances = false,
-                theme = 0
+                theme = 0,
+                fix19GJP = false
             };
             string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(json, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(configPath, jsonText);
@@ -755,6 +757,12 @@ namespace XPSLauncher
                     WriteConfig("theme", 0);
                     config.allowMultipleInstances = false;
                     config.closeOnLoad = config.closeOnExit ?? false;
+                }
+
+                if (config.lastVersion == "2.2.0")
+                {
+                    WriteConfig("fix19GJP", false);
+                    config.fix19GJP = false;
                 }
 
                 settingCloseOnLoad = config.closeOnLoad;
@@ -851,6 +859,19 @@ namespace XPSLauncher
                 pictureBox10.Visible = false;
             }
             WriteConfig("allowMultipleInstances", settingAllowMultipleInstances);
+        }
+
+        private void Toggle19GJPFix(object sender = null, EventArgs e = null)
+        {
+            if (settingFix19GJP)
+            {
+                settingFix19GJP = false;
+            }
+            else
+            {
+                settingFix19GJP = true;
+            }
+            WriteConfig("fix19GJP", settingAllowMultipleInstances);
         }
 
         public List<int> GetPIDsByApplicationPath(string applicationPath)
