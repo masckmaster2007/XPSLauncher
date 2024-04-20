@@ -172,6 +172,7 @@ namespace XPSLauncher
                     path = Path.Combine(executionPath, "gdps", "2.0", "XPS.exe");
                     break;
                 case "1.9":
+                    StartProcess(path);
                     path = Path.Combine(executionPath, "gdps", "1.9", "XPS.exe");
                     break;
                 default:
@@ -183,6 +184,9 @@ namespace XPSLauncher
                 if (settingAllowMultipleInstances || !IsProcessOpen(path))
                 {
                     StartProcess(path);
+                    if(version = "1.9") {
+                        StartProcess(Path.Combine(executionPath, "gdps", "1.9", "XPS-Proxy.exe"));
+                    }
                     if (settingCloseOnLoad && !downloadingVersions["2.2"] && !downloadingVersions["2.1"] && !downloadingVersions["2.0"] && !downloadingVersions["1.9"])
                     {
                         Environment.Exit(0);
