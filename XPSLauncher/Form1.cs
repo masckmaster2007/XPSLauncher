@@ -172,7 +172,6 @@ namespace XPSLauncher
                     path = Path.Combine(executionPath, "gdps", "2.0", "XPS.exe");
                     break;
                 case "1.9":
-                    StartProcess(path);
                     path = Path.Combine(executionPath, "gdps", "1.9", "XPS.exe");
                     break;
                 default:
