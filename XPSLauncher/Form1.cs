@@ -186,7 +186,7 @@ namespace XPSLauncher
                 if (settingAllowMultipleInstances || !IsProcessOpen(path) || forceOpen)
                 {
                     StartProcess(path);
-                    if(version = "1.9") {
+                    if(version == "1.9") {
                         StartProcess(Path.Combine(executionPath, "gdps", "1.9", "XPS-Proxy.exe"));
                     }
                     if (settingCloseOnLoad && !downloadingVersions["2.2"] && !downloadingVersions["2.1"] && !downloadingVersions["2.0"] && !downloadingVersions["1.9"])
