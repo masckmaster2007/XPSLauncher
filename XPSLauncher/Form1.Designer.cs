@@ -462,7 +462,7 @@ namespace XPSLauncher
             // pictureBox1
             // 
             this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.pictureBox1.Image = global::XPS.Properties.Resources.logoPng;
+            this.pictureBox1.Image = global::XPS.Properties.Resources.logoPngTransparent;
             this.pictureBox1.Location = new System.Drawing.Point(190, -60);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(222, 238);

@@ -113,9 +113,29 @@ namespace XPS.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap logoIcoTransparent {
+            get {
+                object obj = ResourceManager.GetObject("logoIcoTransparent", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap logoPng {
             get {
                 object obj = ResourceManager.GetObject("logoPng", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap logoPngTransparent {
+            get {
+                object obj = ResourceManager.GetObject("logoPngTransparent", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
