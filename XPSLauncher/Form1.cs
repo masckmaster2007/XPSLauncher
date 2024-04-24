@@ -16,7 +16,7 @@ namespace XPSLauncher
     public partial class Form1 : Form
     {
         private static readonly HttpClient client = new HttpClient();
-        private static readonly string currentVersion = "2.3.9";
+        private static readonly string currentVersion = "2.3.91";
         private PrivateFontCollection privateFonts = new PrivateFontCollection();
         private Dictionary<string, bool> downloadingVersions = new Dictionary<string, bool>()
         {
@@ -255,7 +255,7 @@ namespace XPSLauncher
 
         private void DashboardButton(object sender, EventArgs e)
         {
-            OpenUrl("https://dashboard.xps.xytriza.com");
+            OpenUrl("https://xps.xytriza.com/dashboard");
         }
 
         private void SettingsButton(object sender, EventArgs e)
