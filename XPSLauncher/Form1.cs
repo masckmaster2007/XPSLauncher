@@ -183,7 +183,7 @@ namespace XPSLauncher
 
             if (File.Exists(path) && !downloadingVersions[version] && !errorVersions[version])
             {
-                if (settingAllowMultipleInstances || !IsProcessOpen(path) || forceOpen)
+                if ((settingAllowMultipleInstances && !IsProcessOpen(path)) || forceOpen)
                 {
                     StartProcess(path);
                     if(version == "1.9") {
